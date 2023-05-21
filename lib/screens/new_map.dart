@@ -148,11 +148,11 @@ class _MapWidgetState extends State<MapWidget> {
 
   void setCustomMarkerIcon() async {
     final Uint8List riderIconBytes =
-        await getBytesFromAsset('assets/images/bike.png', 50);
+        await getBytesFromAsset('assets/images/bike.png', 90);
     final Uint8List sourceIconBytes =
-        await getBytesFromAsset('assets/images/source.png', 50);
+        await getBytesFromAsset('assets/images/source.png', 90);
     final Uint8List destinationIconBytes =
-        await getBytesFromAsset('assets/images/destination.png', 50);
+        await getBytesFromAsset('assets/images/destination.png', 90);
     currentLocationIcon = BitmapDescriptor.fromBytes(riderIconBytes);
     sourceIcon = BitmapDescriptor.fromBytes(sourceIconBytes);
     destinationIcon = BitmapDescriptor.fromBytes(destinationIconBytes);
@@ -232,6 +232,8 @@ class _MapWidgetState extends State<MapWidget> {
               points: polylineCoordinates,
               color: ui.Color.fromARGB(255, 13, 8, 39),
               width: 6,
+              // Set polyline rotation to align with the image
+              geodesic: true,
             ),
             Polyline(
               polylineId: const PolylineId("route1"),
