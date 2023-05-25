@@ -68,6 +68,7 @@ class SignupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Container(
@@ -90,7 +91,7 @@ class SignupPage extends StatelessWidget {
                     height: 6,
                   ),
                   Text(
-                    "Sign up to get started!",
+                    "Delivery partner sign up!",
                     style: TextStyle(fontSize: 20, color: Colors.grey.shade400),
                   ),
                 ],
