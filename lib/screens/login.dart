@@ -30,10 +30,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> loginUser() async {
     // Get.to(MainWrapper());
+    final userController = Get.find<UserController>();
+    
     final email = emailController.text;
     final password = passwordController.text;
 
-    const url = '$baseUrl/login'; // Replace with your API endpoint
+    const url = '$baseUrl/delivery-boy-login'; // Replace with your API endpoint
 
     try {
       final headers = {'Content-Type': 'application/json'};
@@ -43,13 +45,12 @@ class _LoginPageState extends State<LoginPage> {
       });
       final response =
           await http.post(Uri.parse(url), headers: headers, body: payload);
-      final userController = Get.find<UserController>();
+      
       final responseData = jsonDecode(response.body);
       if (response.statusCode == 200) {
         // API call successful
         final userData = responseData['data'];
         // Store user info using GetX
-
         userController.setUser(userData);
 
         // Navigate to another page
@@ -165,8 +166,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       child: TextButton(
                         onPressed: () {
-                          // loginUser();
-                          Get.to(const MainWrapper());
+                          loginUser();
+                          // Get.to(const MainWrapper());
                         },
                         style: ButtonStyle(
                           padding:

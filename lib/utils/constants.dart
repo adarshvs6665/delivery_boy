@@ -21,7 +21,13 @@ List<Color> gradient = const [
   Color.fromARGB(0, 255, 255, 255),
 ];
 
-const String baseUrl = "http://192.168.29.27:3000/api/v1/user";
-// const String baseUrl = "http://192.168.1.9:3000/api/v1/user";
+// KU
+// const String baseUrl = "http://10.12.16.29:3000/api/v1/delivery";
+
+// home
+// const String baseUrl = "http://192.168.29.27:3000/api/v1/delivery";
+
+// company
+const String baseUrl = "http://192.168.1.9:3000/api/v1/delivery";
 
 const deliveryCostForSingleItem = 25;

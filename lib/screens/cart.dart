@@ -71,7 +71,7 @@ class _CartState extends State<Cart> {
   }
 
   Future<void> removeCartItem(String cartId) async {
-    String url = '${baseUrl}/cart';
+    String url = '${baseUrl}/delivery-boy-accept-order';
     final headers = {'Content-Type': 'application/json'};
     final payload = jsonEncode({
       "data": {"cartId": cartId}

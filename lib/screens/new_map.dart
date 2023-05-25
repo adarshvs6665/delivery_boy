@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../controller/user_controller.dart';
 
 class MapWidget extends StatefulWidget {
   final bool isOrderActive;
@@ -19,8 +22,9 @@ class MapWidget extends StatefulWidget {
 class _MapWidgetState extends State<MapWidget> {
   final Completer<GoogleMapController> _controller = Completer();
   // static const LatLng sourceLocation = LatLng(8.5686, 76.9620);
-  static const LatLng destination = LatLng(8.5755, 76.9580);
-  static const LatLng source = LatLng(8.5743, 76.9668);
+
+  late LatLng destination;
+  late LatLng source;
 
   Position? _currentPosition;
   GoogleMapController? _mapController;
@@ -31,6 +35,28 @@ class _MapWidgetState extends State<MapWidget> {
 
   List<LatLng> polylineCoordinates = [];
   List<LatLng> polylineCoordinatesSrcToDest = [];
+
+  LatLng getNearestPolylineLocation(LatLng currentLocation,
+      List<LatLng> polylineCoordinates, double thresholdDistance) {
+    double minDistance = double.infinity;
+    LatLng nearestPoint = polylineCoordinates[0];
+
+    for (LatLng point in polylineCoordinates) {
+      double distance = Geolocator.distanceBetween(
+        currentLocation.latitude,
+        currentLocation.longitude,
+        point.latitude,
+        point.longitude,
+      );
+
+      if (distance < minDistance && distance <= thresholdDistance) {
+        minDistance = distance;
+        nearestPoint = point;
+      }
+    }
+
+    return nearestPoint;
+  }
 
   double calculateBearingAngle(
     double startLatitude,
@@ -90,13 +116,18 @@ class _MapWidgetState extends State<MapWidget> {
       setState(() {});
     }
 
+    LatLng nearestPolylineLocation =
+        getNearestPolylineLocation(_center, polylineCoordinates, 50);
+
     // Calculate the bearing angle between the current location and the destination
     double bearingAngle = calculateBearingAngle(
       _center.latitude,
       _center.longitude,
-      destination.latitude,
-      destination.longitude,
+      nearestPolylineLocation.latitude,
+      nearestPolylineLocation.longitude,
     );
+
+    bearingAngle = bearingAngle - 180;
 
     // Rotate the map camera to adjust the polyline towards the top of the image
     _mapController!.animateCamera(
@@ -160,12 +191,23 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   void initState() {
+    final userController = Get.find<UserController>();
+//             print("dsjfkanfkjasdnfjkasndfjsjjjjjjjjjjjjjjjjjjjjjjjjjjjadsfsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaajjjjjjjjjj");
+// print(userController.deliveryDetails.value['deliveryLocation'].latitude);
+    destination = LatLng(
+        userController.deliveryDetails.value['deliveryLocation'].latitude,
+        userController.deliveryDetails.value['deliveryLocation'].longitude);
+    source = LatLng(
+        userController.deliveryDetails.value['pickupLocation'].latitude,
+        userController.deliveryDetails.value['pickupLocation'].longitude);
+        
     setCustomMarkerIcon();
     super.initState();
     // Load custom marker icon
 
     _determinePosition().then((position) async {
       setState(() {
+        print(position);
         _currentPosition = position;
         // print("lat long");
         _center =
@@ -218,10 +260,11 @@ class _MapWidgetState extends State<MapWidget> {
                     markerId: MarkerId("currentLocation"),
                     position: _center!,
                     icon: currentLocationIcon,
+                    anchor: Offset(0.5, 0.5),
                   ),
                 }
               : {},
-          myLocationEnabled: true,
+          myLocationEnabled: false,
           initialCameraPosition: CameraPosition(
             target: _center ?? const LatLng(0, 0),
             zoom: 15,

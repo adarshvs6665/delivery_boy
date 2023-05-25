@@ -9,24 +9,19 @@ import '../utils/app_theme.dart';
 import 'main_wrapper.dart';
 
 void main() async {
-  // await GetStorage.init();
-  // Get.put<UserController>(UserController());
+  await GetStorage.init();
+  Get.put<UserController>(UserController());
 
-  // final userController = Get.find<UserController>();
-  // final userId = userController.user.value['userId'];
+  final userController = Get.find<UserController>();
+  final deliveryBoyId = userController.user.value['deliveryBoyId'];
 
   Widget initialPage;
 
-  // if (true) {
-  //   initialPage = const MainWrapper();
-  // } else {
+  if (deliveryBoyId != null) {
+    initialPage = const MainWrapper();
+  } else {
     initialPage = LoginPage();
-  // }
-  // if (userId != null) {
-  //   initialPage = const MainWrapper();
-  // } else {
-  //   initialPage = LoginPage();
-  // }
+  }
 
   runApp(
     GetMaterialApp(

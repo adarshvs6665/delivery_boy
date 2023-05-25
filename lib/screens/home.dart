@@ -26,9 +26,9 @@ class _HomeState extends State<Home> {
         PageController(initialPage: _currentIndex, viewportFraction: 0.7);
     super.initState();
 
-    // final userController = Get.find<UserController>();
-    // final userId = userController.user.value['userId'];
-    // print(userId);
+    final userController = Get.find<UserController>();
+    final userId = userController.user.value['userId'];
+    print(userId);
   }
 
   @override

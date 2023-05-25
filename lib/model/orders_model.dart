@@ -6,23 +6,31 @@ class Order {
   final String orderId;
   final BaseModel item; // Add variable of type BaseModel
   final String status;
-  final DeliveryPartnerModel? deliveryPartner; // Make it nullable
   final Location deliveryLocation; // Remove nullability
+  final bool accepted;
+  final String acceptedPumpId;
+  final Location pickupLocation;
+  final bool acceptedByMe;
 
   Order({
     required this.orderId,
     required this.item,
     required this.status,
-    this.deliveryPartner, // Update the parameter
-    required this.deliveryLocation, // Remove nullability
+    required this.deliveryLocation,
+    required this.accepted,
+    required this.acceptedPumpId,
+    required this.pickupLocation,
+    required this.acceptedByMe,
   });
 
   Map<String, dynamic> toJson() => {
         'orderId': orderId,
         'item': item.toJson(),
         'status': status,
-        'deliveryPartner': deliveryPartner
-            ?.toJson(), // Accessing toJson only if deliveryPartner is not null
         'deliveryLocation': deliveryLocation.toJson(),
+        'accepted': accepted,
+        'acceptedPumpId': acceptedPumpId,
+        'pickupLocation': pickupLocation.toJson(),
+        'acceptedByMe': acceptedByMe
       };
 }

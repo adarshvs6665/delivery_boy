@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:bottom_bar_matu/bottom_bar_matu.dart';
 import 'package:delivery_boy/controller/user_controller.dart';
@@ -6,10 +8,7 @@ import 'package:delivery_boy/screens/order_details.dart';
 import 'package:delivery_boy/widget/reuseable_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:line_icons/line_icons.dart';
-
-import '../screens/cart.dart';
-import '../screens/home.dart';
+import 'package:http/http.dart' as http;
 import '../screens/new_map.dart';
 import '../utils/constants.dart';
 
@@ -29,12 +28,26 @@ class _MainWrapperState extends State<MainWrapper> {
     const OrderDetails(),
   ];
 
+  void completeOrder(String orderId) async {
+    String url = '${baseUrl}/delivery-boy-complete-order';
+    final headers = {'Content-Type': 'application/json'};
+    final userController = Get.find<UserController>();
+    final payload = jsonEncode({
+      "data": {
+        "orderId": orderId,
+      }
+    });
+    final response =
+        await http.post(Uri.parse(url), headers: headers, body: payload);
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget bodyWidget;
     Widget appbarTitle;
 
-    // final userController = Get.find<UserController>();
+    final userController = Get.find<UserController>();
+    var acceptedFlagLocal = userController.acceptedFlag.value;
 
     if (isOrdersActive) {
       bodyWidget = const OrderDetails();
@@ -47,27 +60,46 @@ class _MainWrapperState extends State<MainWrapper> {
         ),
       );
     } else {
-      bodyWidget = Column(
-        children: [
-          Expanded(
-            child: MapWidget(isOrderActive: true),
-          ),
-          FadeInUp(
-            delay: const Duration(milliseconds: 550),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
-              child: ReuseableButton(
-                text: "Delivered",
-                onTap: () {
-                  // if (itemsOnCartDev.isNotEmpty) {
-                  //   Get.offAll(() => ConfirmLocation(data: itemsOnCartDev));
-                  // }
-                },
-              ),
-            ),
-          )
-        ],
-      );
+      bodyWidget = acceptedFlagLocal
+          ? Column(
+              children: [
+                Expanded(child: MapWidget(isOrderActive: true)),
+                if (acceptedFlagLocal) ...[
+                  FadeInUp(
+                    delay: const Duration(milliseconds: 550),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15.0),
+                      child: ReuseableButton(
+                        text: "Order Delivered",
+                        onTap: () {
+                          completeOrder(
+                              userController.deliveryDetails.value['orderId']);
+                        },
+                      ),
+                    ),
+                  )
+                ]
+              ],
+            )
+          : Center(
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.arrow_circle_right_rounded,
+                  color: Colors.orange,
+                  size: 80.0,
+                ),
+                SizedBox(height: 20.0),
+                Text(
+                  'Accept an order first!',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ));
       appbarTitle = FadeIn(
         delay: const Duration(milliseconds: 300),
         child: const Text(
@@ -96,25 +128,12 @@ class _MainWrapperState extends State<MainWrapper> {
             padding: const EdgeInsets.only(right: 10),
             child: IconButton(
               icon: const Icon(
-                LineIcons.shoppingBag,
-                color: Colors.black,
-                size: 30,
-              ),
-              onPressed: () {
-                Get.to(() => Cart());
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: IconButton(
-              icon: const Icon(
                 Icons.logout,
                 color: Colors.grey,
                 size: 30,
               ),
               onPressed: () {
-                // userController.clearUserDetails();
+                userController.clearUserDetails();
                 Get.to(LoginPage());
               },
             ),
@@ -128,9 +147,6 @@ class _MainWrapperState extends State<MainWrapper> {
         items: [
           BottomBarItem(iconData: Icons.home),
           BottomBarItem(iconData: Icons.list_alt),
-          // BottomBarItem(iconData: Icons.settings),
-          // BottomBarItem(iconData: Icons.explore),
-          // BottomBarItem(iconData: Icons.mail),
         ],
         onSelect: (index) {
           if (index == 0) {
