@@ -1,7 +1,70 @@
+import 'dart:convert';
+
+import 'package:delivery_boy/main_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import '../utils/constants.dart';
 
 class SignupPage extends StatelessWidget {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final mobileController = TextEditingController();
+
+  Future<void> signupUser() async {
+    final email = emailController.text;
+    final password = passwordController.text;
+    final name = nameController.text;
+    final mobile = mobileController.text;
+
+    const url =
+        '$baseUrl/create-delivery-boy'; // Replace with your API endpoint
+
+    try {
+      final headers = {'Content-Type': 'application/json'};
+      final payload = jsonEncode({
+        'email': email,
+        'password': password,
+        'name': name,
+        mobile: 'mobile',
+      });
+      final response =
+          await http.post(Uri.parse(url), headers: headers, body: payload);
+
+      final responseData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        // final responseMessage = "registered";
+        final responseMessage = responseData['message'];
+        Fluttertoast.showToast(
+            msg: responseMessage,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.orange,
+            textColor: Colors.white,
+            fontSize: 6.0);
+
+            Get.back();
+      } else {
+        // Handle API error
+        final responseMessage = responseData['message'];
+        Fluttertoast.showToast(
+            msg: responseMessage,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.orange,
+            textColor: Colors.white,
+            fontSize: 6.0);
+      }
+    } catch (e) {
+      // Handle network error
+      print('Network Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +98,7 @@ class SignupPage extends StatelessWidget {
               Column(
                 children: <Widget>[
                   TextField(
+                    controller: nameController,
                     decoration: InputDecoration(
                       labelText: "Full Name",
                       labelStyle: TextStyle(
@@ -56,6 +120,7 @@ class SignupPage extends StatelessWidget {
                     height: 16,
                   ),
                   TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       labelText: "Email ID",
                       labelStyle: TextStyle(
@@ -77,6 +142,7 @@ class SignupPage extends StatelessWidget {
                     height: 16,
                   ),
                   TextField(
+                    controller: passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "Password",
@@ -96,7 +162,29 @@ class SignupPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 16,
+                  ),
+                  TextField(
+                    controller: mobileController,
+                    decoration: InputDecoration(
+                      labelText: "Mobile",
+                      labelStyle: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade400,
+                          fontWeight: FontWeight.w600),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.red),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
                   ),
                   SizedBox(
                       height: 50,
@@ -131,18 +219,59 @@ class SignupPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Container(
-                            constraints: const BoxConstraints(
-                                maxHeight: 50, maxWidth: double.infinity),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              "Sign up",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
+                              height: 50,
+                              width: double.infinity,
+                              child: TextButton(
+                                onPressed: () {
+                                  signupUser();
+                                  // Get.to(const MainWrapper());
+                                },
+                                style: ButtonStyle(
+                                  padding: MaterialStateProperty.all<
+                                          EdgeInsetsGeometry>(
+                                      const EdgeInsets.all(0)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                  ),
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          const Color(0xffff5f6d)),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white),
+                                ),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                      colors: [
+                                        Color(0xffff5f6d),
+                                        Color(0xffff5f6d),
+                                        Color(0xffffc371),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Container(
+                                    constraints: const BoxConstraints(
+                                        maxWidth: double.infinity,
+                                        minHeight: 50),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      "Sign Up",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              )),
                         ),
                       )),
                   const SizedBox(
@@ -164,8 +293,8 @@ class SignupPage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                          Get.back();
-},
+                        Get.back();
+                      },
                       child: const Text(
                         "Sign in.",
                         style: TextStyle(

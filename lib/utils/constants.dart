@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 const Color primaryColor = Color(0xfff9985f);
 
-List<String> quantity = ["1L"];
 List<Color> colors = const [
   Color.fromARGB(255, 255, 176, 170),
   Color.fromARGB(255, 189, 225, 255),

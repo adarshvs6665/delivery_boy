@@ -15,8 +15,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Move the controller and fToast variables inside the state class
-  // Move the controller and fToast variables inside the state class
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   late FToast fToast;
@@ -29,7 +27,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> loginUser() async {
-    // Get.to(MainWrapper());
     final userController = Get.find<UserController>();
     
     final email = emailController.text;
@@ -98,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 6,
                   ),
                   Text(
-                    "Sign in to continue!",
+                    "Delivery partner sign in...",
                     style: TextStyle(fontSize: 20, color: Colors.grey.shade400),
                   ),
                 ],
