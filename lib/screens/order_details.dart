@@ -97,7 +97,7 @@ class _OrderDetailsState extends State<OrderDetails> {
 
   @override
   Widget build(BuildContext context) {
-    Widget test = orders.length > 0
+    Widget bodyWidget = orders.length > 0
         ? ListView.builder(
             itemCount: orders.length,
             itemBuilder: (BuildContext context, int index) {
@@ -205,7 +205,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         body: RefreshIndicator(
       onRefresh: onRefresh,
       child: Stack(
-    children: <Widget>[ListView(), test],
+    children: <Widget>[ListView(), bodyWidget],
   ),
     ));
   }
