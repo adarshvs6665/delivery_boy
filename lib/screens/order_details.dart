@@ -91,111 +91,122 @@ class _OrderDetailsState extends State<OrderDetails> {
     }
   }
 
+  Future<void> onRefresh() async {
+    await fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: orders.length > 0
-          ? ListView.builder(
-              itemCount: orders.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      print("acceptedFlagLocal");
-                      print(acceptedFlagLocal);
-                      if (acceptedFlagLocal) {
-                        if (orders[index].acceptedByMe) {
-                          Get.to(() => OrderInformation(order: orders[index]));
-                        }
-                      } else if (!acceptedFlagLocal) {
+    Widget test = orders.length > 0
+        ? ListView.builder(
+            itemCount: orders.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: GestureDetector(
+                  onTap: () {
+                    print("acceptedFlagLocal");
+                    print(acceptedFlagLocal);
+                    if (acceptedFlagLocal) {
+                      if (orders[index].acceptedByMe) {
                         Get.to(() => OrderInformation(order: orders[index]));
                       }
-                    },
-                    child: Card(
-                      color: orders[index].acceptedByMe
-                          ? Color.fromARGB(255, 255, 153, 0)
-                          : Color.fromARGB(255, 223, 223, 223),
-                      elevation: 4.0,
-                      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ListTile(
-                        leading: Image.asset(orders[index].item.imageUrl),
-                        title: Text(orders[index].item.name,
-                            style: orders[index].acceptedByMe
-                                ? const TextStyle(color: Colors.white)
-                                : TextStyle(color: Colors.black)),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (orders[index].status == "PENDING") ...[
-                              const Text('Delivery Time: Not available')
-                            ] else if (orders[index].status == "DELIVERY") ...[
-                              Text(
-                                  'Delivery Location: ${orders[index].deliveryLocation.latitude}, ${orders[index].deliveryLocation.longitude}',
-                                  style: orders[index].acceptedByMe
-                                      ? const TextStyle(color: Colors.white)
-                                      : TextStyle(color: Colors.black)),
-                              Text(
-                                  'Pickup Location: ${orders[index].pickupLocation.latitude}, ${orders[index].pickupLocation.longitude}',
-                                  style: orders[index].acceptedByMe
-                                      ? const TextStyle(color: Colors.white)
-                                      : TextStyle(color: Colors.black))
-                            ],
-                            Text('Price: ${orders[index].item.price}',
+                    } else if (!acceptedFlagLocal) {
+                      Get.to(() => OrderInformation(order: orders[index]));
+                    }
+                  },
+                  child: Card(
+                    color: orders[index].acceptedByMe
+                        ? Color.fromARGB(255, 255, 153, 0)
+                        : Color.fromARGB(255, 223, 223, 223),
+                    elevation: 4.0,
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ListTile(
+                      leading: Image.asset(orders[index].item.imageUrl),
+                      title: Text(orders[index].item.name,
+                          style: orders[index].acceptedByMe
+                              ? const TextStyle(color: Colors.white)
+                              : TextStyle(color: Colors.black)),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (orders[index].status == "PENDING") ...[
+                            const Text('Delivery Time: Not available')
+                          ] else if (orders[index].status == "DELIVERY") ...[
+                            Text(
+                                'Delivery Location: ${orders[index].deliveryLocation.latitude}, ${orders[index].deliveryLocation.longitude}',
                                 style: orders[index].acceptedByMe
                                     ? const TextStyle(color: Colors.white)
                                     : TextStyle(color: Colors.black)),
-                            Text('Payment mode: COD',
+                            Text(
+                                'Pickup Location: ${orders[index].pickupLocation.latitude}, ${orders[index].pickupLocation.longitude}',
                                 style: orders[index].acceptedByMe
                                     ? const TextStyle(color: Colors.white)
-                                    : TextStyle(color: Colors.black)),
+                                    : TextStyle(color: Colors.black))
                           ],
-                        ),
-                        trailing: () {
-                          if (orders[index].status == "PENDING") {
-                            return const Icon(
-                              Icons.watch_later,
-                              color: Colors.orange,
-                            );
-                          } else if (orders[index].status == "DELIVERY") {
-                            return const Icon(
-                              Icons.share_location,
-                              color: Colors.blue,
-                            );
-                          } else if (orders[index].status == "COMPLETED") {
-                            return const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                            );
-                          }
-                        }(),
+                          Text('Price: ${orders[index].item.price}',
+                              style: orders[index].acceptedByMe
+                                  ? const TextStyle(color: Colors.white)
+                                  : TextStyle(color: Colors.black)),
+                          Text('Payment mode: COD',
+                              style: orders[index].acceptedByMe
+                                  ? const TextStyle(color: Colors.white)
+                                  : TextStyle(color: Colors.black)),
+                        ],
                       ),
+                      trailing: () {
+                        if (orders[index].status == "PENDING") {
+                          return const Icon(
+                            Icons.watch_later,
+                            color: Colors.orange,
+                          );
+                        } else if (orders[index].status == "DELIVERY") {
+                          return const Icon(
+                            Icons.share_location,
+                            color: Colors.blue,
+                          );
+                        } else if (orders[index].status == "COMPLETED") {
+                          return const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                          );
+                        }
+                      }(),
                     ),
                   ),
-                );
-              },
-            )
-          : Center(
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  Icons.thumb_down_rounded,
-                  color: Colors.orange,
-                  size: 80.0,
                 ),
-                SizedBox(height: 20.0),
-                Text(
-                  'No orders!',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+              );
+            },
+          )
+        : Container(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(
+                Icons.thumb_down_rounded,
+                color: Colors.orange,
+                size: 80.0,
+              ),
+              SizedBox(height: 20.0),
+              Text(
+                'No orders!',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            )),
-    );
+              ),
+            ],
+          ),
+        );
+    return Scaffold(
+        body: RefreshIndicator(
+      onRefresh: onRefresh,
+      child: Stack(
+    children: <Widget>[ListView(), test],
+  ),
+    ));
   }
 }
