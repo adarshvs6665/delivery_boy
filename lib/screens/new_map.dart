@@ -192,8 +192,6 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void initState() {
     final userController = Get.find<UserController>();
-//             print("dsjfkanfkjasdnfjkasndfjsjjjjjjjjjjjjjjjjjjjjjjjjjjjadsfsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaajjjjjjjjjj");
-// print(userController.deliveryDetails.value['deliveryLocation'].latitude);
     destination = LatLng(
         userController.deliveryDetails.value['deliveryLocation'].latitude,
         userController.deliveryDetails.value['deliveryLocation'].longitude);
