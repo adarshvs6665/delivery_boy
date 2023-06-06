@@ -41,6 +41,9 @@ class _OrderDetailsState extends State<OrderDetails> {
       final accepted = order['accepted'] as bool;
       final acceptedByMe = order['acceptedByMe'] as bool;
       final acceptedPumpId = order['acceptedPumpId'] as String;
+      final userContact = order['userContact'] as String;
+      print("####################################################");
+      print(userContact);
 
       final item = BaseModel.fromJson(itemJson);
       final deliveryLocation = Location.fromJson(deliveryLocationJson);
@@ -64,6 +67,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         acceptedPumpId: acceptedPumpId,
         pickupLocation: pickupLocation,
         acceptedByMe: acceptedByMe,
+        userContact: userContact
       );
     }).toList();
   }
@@ -78,6 +82,7 @@ class _OrderDetailsState extends State<OrderDetails> {
         .get(Uri.parse(url).replace(queryParameters: queryParameters));
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
+      print(responseData);
       final List<Order> orders = parseOrders(responseData['data']);
       setState(() {
         this.orders = orders;

@@ -11,6 +11,7 @@ class Order {
   final String acceptedPumpId;
   final Location pickupLocation;
   final bool acceptedByMe;
+  final String userContact;
 
   Order({
     required this.orderId,
@@ -21,6 +22,7 @@ class Order {
     required this.acceptedPumpId,
     required this.pickupLocation,
     required this.acceptedByMe,
+    required this.userContact
   });
 
   Map<String, dynamic> toJson() => {
@@ -31,6 +33,7 @@ class Order {
         'accepted': accepted,
         'acceptedPumpId': acceptedPumpId,
         'pickupLocation': pickupLocation.toJson(),
-        'acceptedByMe': acceptedByMe
+        'acceptedByMe': acceptedByMe,
+        'userContact': userContact
       };
 }

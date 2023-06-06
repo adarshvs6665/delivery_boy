@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:animate_do/animate_do.dart';
+import 'package:delivery_boy/main_wrapper.dart';
 import 'package:delivery_boy/model/orders_model.dart';
+import 'package:delivery_boy/screens/order_details.dart';
 import 'package:delivery_boy/utils/constants.dart';
 import 'package:delivery_boy/widget/reuseable_button.dart';
 import 'package:delivery_boy/widget/reuseable_row_for_cart.dart';
@@ -52,6 +54,10 @@ class _OrderInformationState extends State<OrderInformation> {
     });
     final response =
         await http.post(Uri.parse(url), headers: headers, body: payload);
+
+    if(response.statusCode == 200) {
+      Get.to(MainWrapper(givenIndex: 1));
+    }
   }
 
   @override
@@ -213,6 +219,27 @@ class _OrderInformationState extends State<OrderInformation> {
                                   child: ReuseableRowForCart(
                                     price: order.item.price,
                                     text: 'Sub Total',
+                                  ),
+                                ),
+                                FadeInUp(
+                                  delay: const Duration(milliseconds: 400),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 12.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Contact",
+                                            style: textTheme.headlineSmall
+                                                ?.copyWith(
+                                                    color: Colors.grey,
+                                                    fontSize: 16)),
+                                        ReuseableTextComponent(
+                                          inputText:
+                                              order.userContact,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 FadeInUp(

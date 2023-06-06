@@ -18,7 +18,7 @@ void main() async {
   Widget initialPage;
 
   if (deliveryBoyId != null) {
-    initialPage = const MainWrapper();
+    initialPage = const MainWrapper(givenIndex: 1);
   } else {
     initialPage = LoginPage();
   }

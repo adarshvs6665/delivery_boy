@@ -13,8 +13,9 @@ import '../screens/new_map.dart';
 import '../utils/constants.dart';
 
 class MainWrapper extends StatefulWidget {
-  const MainWrapper({super.key});
+  const MainWrapper({super.key, required this.givenIndex});
 
+  final int givenIndex;
   @override
   State<MainWrapper> createState() => _MainWrapperState();
 }
@@ -39,6 +40,26 @@ class _MainWrapperState extends State<MainWrapper> {
     });
     final response =
         await http.post(Uri.parse(url), headers: headers, body: payload);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _index = 1;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _index = widget.givenIndex;
+    });
+  if(widget.givenIndex == 1) {
+    setState(() {
+      isOrdersActive = true;
+    });
+  }
+
   }
 
   @override
@@ -70,7 +91,7 @@ class _MainWrapperState extends State<MainWrapper> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15.0),
                       child: ReuseableButton(
-                        text: "Order Delivered",
+                        text: "Deliver Order",
                         onTap: () {
                           completeOrder(
                               userController.deliveryDetails.value['orderId']);

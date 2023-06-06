@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> loginUser() async {
     final userController = Get.find<UserController>();
-    
+
     final email = emailController.text;
     final password = passwordController.text;
 
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       });
       final response =
           await http.post(Uri.parse(url), headers: headers, body: payload);
-      
+
       final responseData = jsonDecode(response.body);
       if (response.statusCode == 200) {
         // API call successful
@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
         userController.setUser(userData);
 
         // Navigate to another page
-        Get.to(const MainWrapper());
+        Get.to(const MainWrapper(givenIndex: 0));
       } else {
         // Handle API error
         final responseMessage = responseData['message'];
